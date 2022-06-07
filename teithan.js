@@ -1,8 +1,8 @@
 /* -------------------------------------------------------------------------------
- *   _      (̅_) _  |‾| gui text editor  (c) Sevarian  2022.05.08   v00.00.04 beta
+ *   _      (̅_) _  |‾| gui text editor  (c) Sevarian  2022.06.07   v00.00.04 beta
  *  | |_ ___ _ | |_| |__  ___ ____          aka. Ian Jukes <spayz@realgamer.org>
  * (   _) _ | (   _)  _ \(__ |  _ \     This work is free. You can redistribute it
- *  | |_| __| || |_| | | / _ | | | |    and/or modify itunder the terms of the 
+ *  | |_| __| || |_| | | / _ | | | |    and/or modify it under the terms of the 
  *   \__)___)_| \__)_| |_\___|_| |_|    GPL v2 (or later versions),
  *                                      https://www.gnu.org/licenses/gpl-2.0.txt
  *                                      for more info see http://amazer.uk/projects
@@ -30,18 +30,19 @@
  * data-options        space separated options, the minimum you will probably want is `std` to add the 
  *                     standard buttons, the options are
  *     std             include the std buttons
+ *     min             include the minimum set of buttons
  *     btn-raw         add a button that will show the original textarea control for raw editing
  *     no-label-delay  by default the label is set and faded in after a couple of seconds, this disables 
  *                     this effect and inserts the label immediately
  *     no-css          do not insert the standard css into the page, allowing you to set your own css to 
  *                     style teithan without any conflicts
  * 
- * data-style          CSS added to the editable div element
- * data-menu-style     CSS assed to the outer div containing the tollbar buttons
- * data-label-style    CSS added to the label element
+ * data-style          CSS added directly to the editable div element
+ * data-menu-style     CSS added directly to the outer div containing the toolbar buttons
+ * data-label-style    CSS added directly to the label element
  * 
  * Helper Function
- * teithan.refresh();  //call this after any dynamic AJXA loads of a ny new teithan textareas
+ * teithan.refresh();  //call this after any dynamic AJXA loads of any new teithan textareas
  */
 function GUITeithan()
 { let _t = this;
