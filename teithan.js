@@ -1,24 +1,23 @@
-/* -------------------------------------------------------------------------------
- *   _      (̅_) _  |‾| gui text editor  (c) Sevarian  2022.06.07   v00.00.04 beta
- *  | |_ ___ _ | |_| |__  ___ ____          aka. Ian Jukes <spayz@realgamer.org>
- * (   _) _ | (   _)  _ \(__ |  _ \     This work is free. You can redistribute it
- *  | |_| __| || |_| | | / _ | | | |    and/or modify it under the terms of the 
- *   \__)___)_| \__)_| |_\___|_| |_|    GPL v2 (or later versions),
- *                                      https://www.gnu.org/licenses/gpl-2.0.txt
- *                                      for more info see http://amazer.uk/projects
- * -------------------------------------------------------------------------------- 
+/* ---------------------------------------------------------------------------------
+ *   _      (_) _  |‾| gui text editor   (c) Sevarian   2022.06.07   v00.00.04 beta
+ *  | |_ ___ _ | |_| |__  ___ ____           aka. Ian Jukes <spayz@realgamer.org>
+ * (   _) _ | (   _)  _ \(__ |  _ \      This work is free.  You can redistribute it
+ *  | |_| __| || |_| | | / _ | | | |     and/or  modify it  under the  terms of  the 
+ *   \__)___)_| \__)_| |_\___|_| |_|     GPL v2 (or later versions),
+ *                                       https://www.gnu.org/licenses/gpl-2.0.txt
+ * https://www.elfdict.com/w/teithan/s   for more info see http://amazer.uk/projects
+ * --------------------------------------------------------------------------------- 
  * DOCUMENTATION
- * --------------------------------------------------------------------------------
- * Basic Usage
+ * Basic Usage ---------------------------------------------------------------------
  * 
- * <textarea name='text' teithan 
+ * <textarea name='yourFieldName' teithan 
         style='font-family:monospace;font-size:90%;width:100%;max-height:40vh;min-height:30vh;margin-top:0.2em;'
         data-label='HTML Editor <i>(Teithan)</i>...'
         data-options='std Xno-label-delay btn-raw'
         data-style='font-family:Tahoma,sans;color:black;background-color:#EEE;max-height:60vh;min-height:50vh;'
         data-menu-style='padding:2px 6px;margin-right:6px;margin-bottom:3px;'
         data-label-style='font-family:Tahoma,sans;color:black;font-weight:bold;font-size:120%;'
-        ><p>Lorem ipsum po deridas erin quo mare.</p><p>Si eras du varda lallies en paquage.</p></textarea>
+        ><p>Lorem ipsum the data content po deridas erin quo mare.</p><p>Si eras du varda lallies en paquage.</p></textarea>
     <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
     <script src='teithan.js'></script>
  * 
@@ -42,15 +41,15 @@
  * data-label-style    CSS added directly to the label element
  * 
  * Helper Function
- * teithan.refresh();  //call this after any dynamic AJXA loads of any new teithan textareas
+ * teithan.refresh();  //call this after any dynamic AJAX loads of any new teithan textareas
  */
 function GUITeithan()
-{ let _t = this;
+{ let _t = this; //space saving shortcut
   _t.version='0.0.4-beta';
-  _t.date='2022-05-08';
+  _t.date='2022-06-07';
   _t.log = console.log;
   //this.log = ()=>{}; //production
-  _t.f = String.fromCharCode;
+  _t.f=String.fromCharCode;
   _t.alloptions='';
   _t.settings=[];
 
@@ -73,7 +72,7 @@ function GUITeithan()
     });
     _t.alloptions=alloptions;
     if(!_t.alloptions.includes(' no-css ') && $('style[teithan]').length==0)
-    { $('body').prepend(`<style type='text/css' teithan>`
+    { $('head').append(`<style type='text/css' teithan>`
           +`[teithaneditable]{border:2px solid black;border-radius:1em;padding:0.5em;overflow:auto;position:relative;z-index:20;}`
           +`[teithanheader]{}`
           +`[teithanmenu]{border:2px solid silver;border-radius:0.5em;background:white;float:right;z-index:2;}`
@@ -81,6 +80,11 @@ function GUITeithan()
           +`[teithanmenu] span.btnoff{background-color:#eee;}`
           +`[teithanmenu] span.btnon{background-color:lime;}`
           +`[teithanmenu] span:hover{background-color:darkgray;color:white;}`
+          +`</style>`);
+    }
+    if(!_t.alloptions.includes(' no-modal-css ') && $('style[teithanModal]').length==0)
+    { $('head').append(`<style type='text/css' teithanModal>`
+          +`[teithanMask]{position:absolute;top:0px;left:0px:z-index:98;width:100%;height:100%;background-color:black;}`
           +`</style>`);
     }
 
@@ -174,7 +178,10 @@ function GUITeithan()
   }
   _t.promptHref=(msg, val)=>
   { // to be replaced with a custom modal
-    return prompt(msg,val);
+    //$('body').prepend("<div class='teithanMask'>&nbsp;</div>");
+    var res=prompt(msg,val);
+    //$('.teithanMask').remove();
+    return val;
   }
   _t.menuMouseDown=(e)=>
   { e.stopImmediatePropagation();
@@ -247,5 +254,5 @@ function GUITeithan()
     _t.log('restoreRangePosition:',tid);
   };
 };
-teithan = new GUITeithan;
+teithan=new GUITeithan;
 teithan.init();
