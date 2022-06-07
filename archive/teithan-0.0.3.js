@@ -1,52 +1,16 @@
-/* -------------------------------------------------------------------------------
- *   _      (̅_) _  |‾| gui text editor  (c) Sevarian  2022.05.08   v00.00.04 beta
- *  | |_ ___ _ | |_| |__  ___ ____          aka. Ian Jukes <spayz@realgamer.org>
- * (   _) _ | (   _)  _ \(__ |  _ \     This work is free. You can redistribute it
- *  | |_| __| || |_| | | / _ | | | |    and/or modify itunder the terms of the 
- *   \__)___)_| \__)_| |_\___|_| |_|    GPL v2 (or later versions),
- *                                      https://www.gnu.org/licenses/gpl-2.0.txt
- *                                      for more info see http://amazer.uk/projects
- * -------------------------------------------------------------------------------- 
- * DOCUMENTATION
- * --------------------------------------------------------------------------------
- * Basic Usage
- * 
- * <textarea name='text' teithan 
-        style='font-family:monospace;font-size:90%;width:100%;max-height:40vh;min-height:30vh;margin-top:0.2em;'
-        data-label='HTML Editor <i>(Teithan)</i>...'
-        data-options='std Xno-label-delay btn-raw'
-        data-style='font-family:Tahoma,sans;color:black;background-color:#EEE;max-height:60vh;min-height:50vh;'
-        data-menu-style='padding:2px 6px;margin-right:6px;margin-bottom:3px;'
-        data-label-style='font-family:Tahoma,sans;color:black;font-weight:bold;font-size:120%;'
-        ><p>Lorem ipsum po deridas erin quo mare.</p><p>Si eras du varda lallies en paquage.</p></textarea>
-    <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
-    <script src='teithan.js'></script>
- * 
- * Add an attribute `teithan` with no value, a value will be added as a reference when it is 
- * initialised.
- * 
- * style               CSS styling for the actual textarea if it is made visible via btn-raw in the toolbar
- * data-label          The label that is put inserted into the label area of the teithan control
- * data-options        space separated options, the minimum you will probably want is `std` to add the 
- *                     standard buttons, the options are
- *     std             include the std buttons
- *     btn-raw         add a button that will show the original textarea control for raw editing
- *     no-label-delay  by default the label is set and faded in after a couple of seconds, this disables 
- *                     this effect and inserts the label immediately
- *     no-css          do not insert the standard css into the page, allowing you to set your own css to 
- *                     style teithan without any conflicts
- * 
- * data-style          CSS added to the editable div element
- * data-menu-style     CSS assed to the outer div containing the tollbar buttons
- * data-label-style    CSS added to the label element
- * 
- * Helper Function
- * teithan.refresh();  //call this after any dynamic AJXA loads of a ny new teithan textareas
- */
+/* ----------------------------------------------------------------------------------
+ *   _      (̅_) _  |‾| gui text editor    (c) Sevarian  2022.05.03   v00.00.03
+ *  | |_ ___ _ | |_| |__  ___ ____            aka. Ian Jukes <spayz@realgamer.org>
+ * (   _) _ | (   _)  _ \(__ |  _ \       This work is free. You can redistribute it
+ *  | |_| __| || |_| | | / _ | | | |      and/or modify itunder the terms of the 
+ *   \__)___)_| \__)_| |_\___|_| |_|      GPL v2 (or later versions),
+ *                                        https://www.gnu.org/licenses/gpl-2.0.txt
+ *                                        for more info see http://amazer.uk/projects
+ * ----------------------------------------------------------------------------------- */
 function GUITeithan()
 { let _t = this;
-  _t.version='0.0.4-beta';
-  _t.date='2022-05-08';
+  _t.version='0.0.3';
+  _t.date='2022-05-03';
   _t.log = console.log;
   //this.log = ()=>{}; //production
   _t.f = String.fromCharCode;
@@ -68,7 +32,7 @@ function GUITeithan()
   _t.refresh=() =>
   { var alloptions=' ';
     $('textarea[teithan]').each(function()
-    { alloptions += ($(this).data('options') ?? '')+' ' ;
+    { alloptions += $(this).data('options')+' ' ;
     });
     _t.alloptions=alloptions;
     if(!_t.alloptions.includes(' no-css ') && $('style[teithan]').length==0)
@@ -90,20 +54,20 @@ function GUITeithan()
       if(tid=='') //(typeof fr === 'undefined') or
       { var tid=_t.randomString(24);
         $(this).attr('teithan', tid);
-        var options=' '+($(this).data('options') ?? '').toLowerCase()+' ';
+        var options=' '+$(this).data('options').toLowerCase()+' ';
         _t.log('options', options);
         if(!options.includes(' show-raw '))
         { $(this).css('display', 'none');
         }
-        var mcss=$(this).data('menu-style') ?? '';
-        var lcss=$(this).data('label-style') ?? '';
-        var css=$(this).data('style') ?? '';
-        var label=$(this).data('label') ?? '';
+        var mcss=$(this).data('menu-style');
+        var lcss=$(this).data('label-style');
+        var css=$(this).data('style');
+        var label=$(this).data('label');
         var btns='';
         if(options.includes(' std '))
-        { options+=' h1 h2 h3 b i u a ul ol ';
+        { options+=' h1 h2 h3 b i u ul ol ';
         } else if(options.includes(' min '))
-        { options+=' h1 b i u a ';
+        { options+=' h1 b i u ';
         }
         _t.log('btn options', options);
         btns= (options.includes(' h1 ') ? `<span>H1</span>` : '')
@@ -115,10 +79,9 @@ function GUITeithan()
             + (options.includes(' b ')  ? `<span>B</span>` : '')
             + (options.includes(' i ')  ? `<span><i>I</i></span>` : '')
             + (options.includes(' u ')  ? `<span style='text-decoration:underline;'>U</span>` : '')
-            + (options.includes(' a ')  ? `<span data-tag='a'>&#128279;</span>` : '')
             + (options.includes(' ul ') ? `<span data-tag='ul'>&vellip;</span>` : '')
             + (options.includes(' ol ') ? `<span data-tag='ol'>&sup1;&sup2;&sup3;</span>` : '')
-            + (options.includes(' btn-raw ') ? `<span data-tag='raw' class='`+(options.includes(' show-raw ')?'btnon':'btnoff')+`'>&#128065;</span>` : '')
+            + (options.includes(' btn-raw ') ? `<span data-tag='raw' class='`+(options.includes(' show-raw ')?'btnon':'btnoff')+`'>&lt;&bull;&gt;</span>` : '')
             ;
         _t.log('btns', btns);   
         $(this).before(
@@ -156,6 +119,8 @@ function GUITeithan()
   { var tid=$(e.target).attr('teithaneditable');
     $(`textarea[teithan=${tid}]`).val($(e.target).html());
     _t.log('change:',tid);
+    _t.log('change64:', _t.compressToBase64(tid));
+    _t.log('change64undo:',_t.decompressFromBase64(_t.compressToBase64(tid)));
     _t.saveRangePosition(tid);
   };
   _t.tachange=(e)=>
@@ -167,20 +132,13 @@ function GUITeithan()
   { _t.log('edit evnt:', e);
     _t.saveRangePosition($(e.target).attr('teithaneditable'));
   };
-  _t.prompt=(msg, val)=>
-  { // to be replaced with a custom modal
-    return prompt(msg,val);
-  }
-  _t.promptHref=(msg, val)=>
-  { // to be replaced with a custom modal
-    return prompt(msg,val);
-  }
   _t.menuMouseDown=(e)=>
   { e.stopImmediatePropagation();
     e.preventDefault();
     _t.log('btn m-down');
 
-    var btn=(($(e.target).data('tag') || $(e.target).text()) ?? '').toLowerCase();
+    var btn=$(e.target).data('tag') || $(e.target).text();
+    btn = btn.toLowerCase();
     _t.log('btn click:',btn);
     if($(e.target).hasClass('btnon') || $(e.target).hasClass('btnoff'))
     { $(e.target).toggleClass('btnon');
@@ -201,14 +159,6 @@ function GUITeithan()
       case 'i'   : document.execCommand('italic',false);
                    break;
       case 'u'   : document.execCommand('underline',false);
-                   break;
-      case 'a'   : var href=window.getSelection().focusNode.parentElement.href;
-                   var url=_t.promptHref("Create a Link around the highlighted text, Enter a URL",href);
-                   if(url!==null && url!=='')
-                   { document.execCommand("createLink", false, url);
-                   } else if(url=='') // && ele.classList.contains("on"))
-                   { document.execCommand("unLink", false, null);
-                   }
                    break;
       case 'h1'  : //https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
       case 'h2'  :
