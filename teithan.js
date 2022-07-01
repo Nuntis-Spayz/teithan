@@ -105,7 +105,9 @@ function GUITeithan()
         var css=$(this).data('style') ?? '';
         var label=$(this).data('label') ?? '';
         var btns='';
-        if(options.includes(' std '))
+        if(options.includes(' all '))
+        { options+=' p h1 h2 h3 h4 h5 h6 b i u sub sup a ul ol ';
+        } else if(options.includes(' std '))
         { options+=' p h1 h2 h3 b i u a ul ol ';
         } else if(options.includes(' min '))
         { options+=' p h1 b i u a ';
@@ -121,6 +123,8 @@ function GUITeithan()
             + (options.includes(' b ')  ? `<span>B</span>` : '')
             + (options.includes(' i ')  ? `<span><i>I</i></span>` : '')
             + (options.includes(' u ')  ? `<span style='text-decoration:underline;'>U</span>` : '')
+            + (options.includes(' sub ')  ? `<span data-tag='sub'><sub>12</sub></span>` : '')
+            + (options.includes(' sup ')  ? `<span data-tag='sup'><sup>34</sup></span>` : '')
             + (options.includes(' a ')  ? `<span data-tag='a'>&#128279;</span>` : '')
             + (options.includes(' ul ') ? `<span data-tag='ul'>&vellip;</span>` : '')
             + (options.includes(' ol ') ? `<span data-tag='ol'>&sup1;&sup2;&sup3;</span>` : '')
