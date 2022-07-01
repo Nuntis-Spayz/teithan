@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------------
- *   _      (_) _  |‾| gui text editor   (c) Sevarian   2022.06.07   v00.00.04 beta
+ *   _      (_) _  |‾| gui text editor   (c) Sevarian   2022.06.07   v00.00.04 beta2
  *  | |_ ___ _ | |_| |__  ___ ____           aka. Ian Jukes <spayz@realgamer.org>
  * (   _) _ | (   _)  _ \(__ |  _ \      This work is free.  You can redistribute it
  *  | |_| __| || |_| | | / _ | | | |     and/or  modify it  under the  terms of  the 
@@ -45,8 +45,8 @@
  */
 function GUITeithan()
 { let _t = this; //space saving shortcut
-  _t.version='0.0.4-beta';
-  _t.date='2022-06-07';
+  _t.version='0.0.4-beta2';
+  _t.date='2022-07-01';
   _t.log = console.log;
   //this.log = ()=>{}; //production
   _t.f=String.fromCharCode;
@@ -106,12 +106,13 @@ function GUITeithan()
         var label=$(this).data('label') ?? '';
         var btns='';
         if(options.includes(' std '))
-        { options+=' h1 h2 h3 b i u a ul ol ';
+        { options+=' p h1 h2 h3 b i u a ul ol ';
         } else if(options.includes(' min '))
-        { options+=' h1 b i u a ';
+        { options+=' p h1 b i u a ';
         }
         _t.log('btn options', options);
-        btns= (options.includes(' h1 ') ? `<span>H1</span>` : '')
+        btns= (options.includes(' p ') ? `<span data-tag='p'>&para;</span>` : '')
+            + (options.includes(' h1 ') ? `<span>H1</span>` : '')
             + (options.includes(' h2 ') ? `<span>H2</span>` : '')
             + (options.includes(' h3 ') ? `<span>H3</span>` : '')
             + (options.includes(' h4 ') ? `<span>H4</span>` : '')
@@ -140,6 +141,9 @@ function GUITeithan()
           setTimeout(function(tid,t)
           { $(`[teithaninfo=${tid}]`).fadeOut(500,function(){$(this).html(t);}).fadeIn();
           }, 750, tid, label);
+        }
+        if($(this).text()=='') //if empty give it a starter document
+        {   $(this).text('<p><br></p>');
         }
         $(this).before(`<div teithaneditable='${tid}' style='${css}' contenteditable charset="utf-8">`+$(this).text()+`</div>`);
       }
@@ -210,6 +214,14 @@ function GUITeithan()
                    break;
       case 'u'   : document.execCommand('underline',false);
                    break;
+      case 'k'   : document.execCommand("strikeThrough", false, null);
+                   break;
+      case 'sub' : document.execCommand("subscript", false, null);
+                   break;
+      case 'sup' : document.execCommand("superscript", false, null);
+                   break;
+      case 'unf' : //L.unformatSelection(sel);
+                   break;
       case 'a'   : var href=window.getSelection().focusNode.parentElement.href;
                    var url=_t.promptHref("Create a Link around the highlighted text, Enter a URL",href);
                    if(url!==null && url!=='')
@@ -236,11 +248,74 @@ function GUITeithan()
                      }
                    }
                    break;
+      case 'hr'  : document.execCommand("insertHorizontalRule", false, null);
+                   break;
+      case 'ins'    : var raw=prompt("Insert raw HTML Code","");
+                   if(raw!==null && raw!=='')
+                   { L.insertHTML(raw, false);
+                   }
+                   break;
       case 'ul'  : document.execCommand('insertUnorderedList',false);
                    break;
       case 'ol'  : document.execCommand('insertOrderedList',false);
                    break;
+      case 'p'   : //new paragraph/block and force to P
+                   var block=_t.findParentNodeBlock(window.getSelection().focusNode);
+                   document.execCommand("insertParagraph", false, null);
+                   document.execCommand("formatBlock", false, "P");
+                   if((block!=null) && block.nodeName.startsWith("H"))
+                   { var p=window.getSelection().focusNode;
+                     block.after(p); //move the inserted block after the header, then move the cursor to that element
+                     //_t.setCursor(p,true);
+                   }
+                   break;
+      case 'center' : //_t.justifyCenter();
+                   break;
+      case 'full'   : //_t.justifyFull();
+                   break;
+      case 'left'   : //_t.justifyLeft();
+                   break;
+      case 'right'  : //_t.justifyRight();
+                   break;
+      case 'indent' : document.execCommand("indent", false, null);
+                   break;
+      case 'outdent': document.execCommand("outdent", false, null);
+                   break;
     }
+  }
+  _t.findParentNodeBlock=(nd)=>
+  { if(nd.nodeType==Node.ELEMENT_NODE)
+    { if(nd.computedStyleMap())
+      { //console.log(nd.computedStyleMap().get('display').value);
+        if(nd.computedStyleMap().get('display').value === 'block') 
+          return nd;
+      }
+      if((nd.nodeName=="DIV") || (nd.nodeName=="P") || (nd.nodeName=="PRE")
+                || (nd.nodeName=="H1") || (nd.nodeName=="H2") || (nd.nodeName=="H3") 
+                || (nd.nodeName=="H4") || (nd.nodeName=="H5") || (nd.nodeName=="H6") )
+      { //fallback for Safari, IE, and doublecheck
+        return nd;
+      }
+    }
+    return _t.findParentNodeBlock(nd.parentNode);
+  }
+  _t.setCursor=(el, bCollapse)=>
+  { //set cursor to specified node
+    var range = document.createRange();
+    var sel = window.getSelection();
+    if(bCollapse==null)
+    { bCollapse=true; //true is start of object
+    }
+    
+    if(typeof(el.childNodes[0])!=='undefined')
+    { console.log("typeof childNodes[0] "+typeof(el.childNodes[0]));
+      range.setStart(el.childNodes[0], 0);
+    } else
+    { range.setStart(el, 0);
+    }
+    range.collapse(bCollapse);
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
   _t.saveRangePosition=(tid)=>
   { _t.log('save to', typeof tid);
