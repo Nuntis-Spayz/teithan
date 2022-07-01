@@ -3,10 +3,11 @@ Rich HTML editor component in javascript / jquery
 
 Still in beta, but usable
 
-v0.0.4 beta2 (2022-07-01)
+v0.0.4 (2022-07-01)
 ------------------------------
 added Paragraph button
 empty document will be populated with <p><br></p> starter document
+added SUP SUB buttons and ALL tag for load all buttons
 
 v0.0.4 beta (2022-05)
 ------------------------------
