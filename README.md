@@ -6,7 +6,7 @@ Still in beta, but usable
 v0.0.4 (2022-07-01)
 ------------------------------
 added Paragraph button
-empty document will be populated with <p><br></p> starter document
+empty document will be populated with \<p\>\<br\>\<\/p\> starter document
 added SUP SUB buttons and ALL tag for load all buttons
 
 v0.0.4 beta (2022-05)
